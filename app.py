@@ -115,8 +115,16 @@ class AtividadePorPessoa(Resource):
 
 class ListaAtividades(Resource):
     def get(self):
-        atividades = Atividades.query.all()
-        response = [{'id': i.id, 'nome': i.nome, 'pessoa':i.pessoa.nome} for i in atividades]
+        try:
+            atividades = Atividades.query.all()
+            response = [{'id':i.id, 'nome':i.nome, 'pessoa':i.pessoa.nome}  for i in atividades]
+            
+        except AttributeError:
+            response = {
+                'status': 'erro',
+                'mensagem': 'Atividades nao foram encontradas'
+            }
+        
         return response
 
     def post(self):
