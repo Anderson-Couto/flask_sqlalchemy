@@ -22,6 +22,11 @@ class Pessoa(Resource):
                 'status': 'error',
                 'mensagem': 'Pessoa nao encontrada'
             }
+        except KeyError:
+            response = {
+                'status': 'error',
+                'mensagem': 'Pessoa nao encontrada'
+            }
         return response
 
     def put(self, id):
@@ -43,6 +48,11 @@ class Pessoa(Resource):
                 'status': 'erro',
                 'mensagem': 'Pessoa nao encontrada'
             }
+        except KeyError:
+            response = {
+                'status': 'erro',
+                'mensagem': 'Pessoa nao encontrada'
+            }
         return response
 
     def delete(self, id):
@@ -59,6 +69,11 @@ class Pessoa(Resource):
                 'status': 'erro',
                 'mensagem': 'Pessoa nao encontrada'
             }
+        except KeyError:
+            response = {
+                'status': 'erro',
+                'mensagem': 'Pessoa nao encontrada'
+            }
         return response
 
 class ListaPessoas(Resource):
@@ -68,14 +83,27 @@ class ListaPessoas(Resource):
         return response
 
     def post(self):
-        dados = json.loads(request.data)
-        pessoa =  Pessoas(nome=dados['nome'], idade=dados['idade'])
-        pessoa.save()
-        response = {
-            'id': pessoa.id,
-            'nome': pessoa.nome,
-            'idade': pessoa.idade
-        }
+        try:
+            dados = json.loads(request.data)
+            pessoa =  Pessoas(nome=dados['nome'], idade=dados['idade'])
+            pessoa.save()
+            response = {
+                'id': pessoa.id,
+                'nome': pessoa.nome,
+                'idade': pessoa.idade
+            }
+        except AttributeError:
+            mensagem = 'Dados invalidos'
+            response = {
+                'status': 'erro',
+                'mensagem': mensagem
+            }
+        except KeyError:
+            mensagem = 'Dados invalidos'
+            response = {
+                'status': 'erro',
+                'mensagem': mensagem
+            }
         return response
 
 class AtividadePorPessoa(Resource):
@@ -115,6 +143,11 @@ class ListaAtividades(Resource):
                 'status': 'erro',
                 'mensagem': 'Dados nao encontrados'
             }
+        except KeyError:
+            response = {
+                'status': 'erro',
+                'mensagem': 'Dados nao encontrados'
+            }
         return response
 
 class Atividade(Resource):
@@ -128,6 +161,11 @@ class Atividade(Resource):
                 'status': atividade.status
             }
         except AttributeError:
+            response = {
+                'status': 'error',
+                'mensagem': 'Atividade nao encontrada'
+            }
+        except KeyError:
             response = {
                 'status': 'error',
                 'mensagem': 'Atividade nao encontrada'
@@ -148,6 +186,11 @@ class Atividade(Resource):
                 'status': 'erro',
                 'mensagem': 'Atividade nao encontrada'
             }
+        except KeyError:
+            response = {
+                'status': 'erro',
+                'mensagem': 'Atividade nao encontrada'
+            }
         return response
 
     def put(self, id):
@@ -164,6 +207,11 @@ class Atividade(Resource):
                 'status': atividade.status
             }
         except AttributeError:
+            response = {
+                'status': 'erro',
+                'mensagem': 'Atividade nao encontrada'
+            }
+        except KeyError:
             response = {
                 'status': 'erro',
                 'mensagem': 'Atividade nao encontrada'
