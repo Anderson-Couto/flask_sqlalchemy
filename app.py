@@ -1,14 +1,28 @@
 from flask import Flask, request
 from flask.globals import request
 from flask_restful import Resource, Api
-from models import Atividades, Pessoas
+from models import Atividades, Pessoas, Usuarios
 import json
 from sqlalchemy.exc import StatementError
+from flask_httpauth import HTTPBasicAuth
 
+
+auth = HTTPBasicAuth()
 app = Flask(__name__)
 api = Api(app)
 
+
+@auth.verify_password
+def verificacao(login, senha):
+    print('Validando Usuário')
+    if not (login, senha):
+        print('Erro ao logar')
+        return False
+    return Usuarios.query.filter_by(login=login, senha=senha).first()
+
+
 class Pessoa(Resource):
+    @auth.login_required
     def get(self, id):
         pessoa = Pessoas.query.filter_by(id=id).first()
         try:
@@ -77,6 +91,7 @@ class Pessoa(Resource):
         return response
 
 class ListaPessoas(Resource):
+    @auth.login_required
     def get(self):
         pessoas = Pessoas.query.all()
         response = [{'id': i.id, 'nome': i.nome, 'idade': i.idade} for i in pessoas]
@@ -107,6 +122,7 @@ class ListaPessoas(Resource):
         return response
 
 class AtividadePorPessoa(Resource):
+    @auth.login_required
     def get(self, id):
         pessoa = Pessoas.query.filter_by(id=id).first()
         atividades = Atividades.query.filter_by(pessoa=pessoa)
@@ -114,6 +130,7 @@ class AtividadePorPessoa(Resource):
         return response
 
 class ListaAtividades(Resource):
+    @auth.login_required
     def get(self):
         try:
             atividades = Atividades.query.all()
@@ -159,6 +176,7 @@ class ListaAtividades(Resource):
         return response
 
 class Atividade(Resource):
+    @auth.login_required
     def get(self, id):
         atividade = Atividades.query.filter_by(id=id).first()
         try:
